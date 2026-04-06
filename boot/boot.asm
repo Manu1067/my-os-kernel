@@ -2,6 +2,7 @@
 [ORG 0x7c00]
 
 start:
+    ; Print Bootloader message
     mov si, boot_msg
     call print_string
 
@@ -17,7 +18,7 @@ start:
 
     cli
 
-    ; -------- LOAD GDT --------
+    ; -------- SETUP GDT --------
     lgdt [gdt_descriptor]
 
     ; -------- ENABLE PROTECTED MODE --------
@@ -26,11 +27,11 @@ start:
     mov cr0, eax
 
     ; -------- JUMP TO 32-BIT --------
-    jmp CODE_SEG:init_pm
+    jmp CODE_SEG:protected_mode
 
 
 ; ==============================
-; 16-bit PRINT FUNCTION
+; PRINT FUNCTION (16-bit)
 ; ==============================
 print_string:
     lodsb
@@ -44,11 +45,11 @@ done:
 
 
 ; ==============================
-; 32-bit MODE
+; 32-BIT MODE
 ; ==============================
 [BITS 32]
 
-init_pm:
+protected_mode:
     mov ax, DATA_SEG
     mov ds, ax
     mov es, ax
@@ -56,7 +57,8 @@ init_pm:
     mov gs, ax
     mov ss, ax
 
-    jmp CODE_SEG:0x1000; jump to kernel
+    ; Jump to kernel
+    jmp CODE_SEG:0x1000
 
 
 ; ==============================
