@@ -14,14 +14,14 @@ print:
 
 done:
     call load_kernel
-    jmp 0x0000:0x1000   ; correct jump (segment:offset)
+    jmp 0x0000:0x1000
 
 ; -------- LOAD KERNEL --------
 load_kernel:
-    mov ah, 0x02        ; BIOS read disk
-    mov al, 1           ; read 1 sector
+    mov ah, 0x02        ; read disk
+    mov al, 10          ; read 10 sectors (IMPORTANT)
     mov ch, 0
-    mov cl, 2           ; sector 2
+    mov cl, 2           ; start from sector 2
     mov dh, 0
     mov dl, 0x80
     mov bx, 0x1000      ; load address
