@@ -1,11 +1,15 @@
 void main() {
     char *video = (char*) 0xb8000;
-    char *msg = "Hello World from Kernel!";
-    
-    for (int i = 0; msg[i] != '\0'; i++) {
+
+    char *msg = "Hello from Kernel";
+
+    int i = 0;
+
+    while (msg[i] != '\0') {
         video[i * 2] = msg[i];
-        video[i * 2 + 1] = 0x0A;  // Green color
+        video[i * 2 + 1] = 0x0F;   // white text
+        i++;
     }
 
-    while(1);
+    while(1) { }
 }
