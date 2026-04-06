@@ -56,7 +56,7 @@ init_pm:
     mov gs, ax
     mov ss, ax
 
-    jmp 0x1000   ; jump to kernel
+    jmp CODE_SEG:0x1000; jump to kernel
 
 
 ; ==============================
