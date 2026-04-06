@@ -1,4 +1,4 @@
-void main() {
+void _start() {
     char *video = (char*) 0xb8000;
 
     char *msg = "Hello from Kernel";
