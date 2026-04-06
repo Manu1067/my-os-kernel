@@ -7,9 +7,9 @@ void _start() {
 
     while (msg[i] != '\0') {
         video[i * 2] = msg[i];
-        video[i * 2 + 1] = 0x0F;   // white text
+        video[i * 2 + 1] = 0x0F;
         i++;
     }
 
-    while(1) { }
+    while(1);
 }
