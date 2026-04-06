@@ -2,49 +2,80 @@
 [ORG 0x7c00]
 
 start:
-    ; set up segments
-    xor ax, ax
-    mov ds, ax
-    mov es, ax
-    mov ss, ax
-    mov sp, 0x7c00
+    mov si, boot_msg
+    call print_string
 
-    ; print loading message
-    mov si, loading_msg
-    call print
-
-    ; load kernel from disk (sector 2, head 0, cylinder 0)
-    mov ah, 0x02          ; BIOS read sectors
-    mov al, 1             ; number of sectors to read (increase if kernel >512 bytes)
-    mov ch, 0             ; cylinder 0
-    mov cl, 2             ; sector 2 (sector 1 is bootloader)
-    mov dh, 0             ; head 0
-    mov bx, 0x1000        ; segment
-    mov es, bx
-    xor bx, bx            ; offset 0 → es:bx = 0x1000:0
+    ; -------- LOAD KERNEL --------
+    mov ah, 0x02
+    mov al, 20
+    mov ch, 0
+    mov cl, 2
+    mov dh, 0
+    mov dl, 0x80
+    mov bx, 0x1000
     int 0x13
-    jc disk_error
 
-    ; jump to loaded kernel
-    jmp 0x1000:0x0000
+    cli
 
-disk_error:
-    mov si, err_msg
-    call print
-    hlt
+    ; -------- LOAD GDT --------
+    lgdt [gdt_descriptor]
 
-print:
+    ; -------- ENABLE PROTECTED MODE --------
+    mov eax, cr0
+    or eax, 1
+    mov cr0, eax
+
+    ; -------- JUMP TO 32-BIT --------
+    jmp CODE_SEG:init_pm
+
+
+; ==============================
+; 16-bit PRINT FUNCTION
+; ==============================
+print_string:
     lodsb
     or al, al
-    jz .done
+    jz done
     mov ah, 0x0e
     int 0x10
-    jmp print
-.done:
+    jmp print_string
+done:
     ret
 
-loading_msg db 'Loading kernel...', 0x0D, 0x0A, 0
-err_msg     db 'Disk error!', 0
+
+; ==============================
+; 32-bit MODE
+; ==============================
+[BITS 32]
+
+init_pm:
+    mov ax, DATA_SEG
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+
+    jmp 0x1000   ; jump to kernel
+
+
+; ==============================
+; GDT
+; ==============================
+gdt_start:
+    dq 0x0000000000000000
+    dq 0x00cf9a000000ffff
+    dq 0x00cf92000000ffff
+gdt_end:
+
+gdt_descriptor:
+    dw gdt_end - gdt_start - 1
+    dd gdt_start
+
+CODE_SEG equ 0x08
+DATA_SEG equ 0x10
+
+boot_msg db "Hello from Bootloader", 0
 
 times 510 - ($ - $$) db 0
 dw 0xaa55
