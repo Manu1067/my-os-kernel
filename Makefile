@@ -5,7 +5,7 @@ all:
 	cat boot.bin kernel.bin > os-image.bin
 
 run:
-	qemu-system-x86_64 os-image.bin
+	qemu-system-x86_64 -drive format=raw,file=os-image.bin
 
 clean:
 	rm -f *.bin *.o
