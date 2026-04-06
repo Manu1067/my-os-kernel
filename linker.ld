@@ -1,9 +1,9 @@
-ENTRY(_start)
-
-SECTIONS {
+ENTRY(main)
+OUTPUT_FORMAT("binary")
+SECTIONS
+{
     . = 0x1000;
-
-    .text : {
-        *(.text)
-    }
+    .text : { *(.text) }
+    .data : { *(.data) }
+    .bss  : { *(.bss)  }
 }
