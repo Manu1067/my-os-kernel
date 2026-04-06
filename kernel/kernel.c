@@ -1,6 +1,5 @@
 void main() {
     char *video = (char*) 0xb8000;
-
     char *msg = "Hello World from Kernel!";
     
     for (int i = 0; msg[i] != '\0'; i++) {
