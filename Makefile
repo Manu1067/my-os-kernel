@@ -20,4 +20,4 @@ run: os-image.bin
 	qemu-system-x86_64 os-image.bin
 
 clean:
-	del /Q *.bin *.o os-image.bin 2>nul
+	rm -f *.bin *.o *.elf
