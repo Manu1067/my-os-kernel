@@ -1,15 +1,9 @@
-void _start() {
-    char *video = (char*) 0xb8000;
+void main() {
+    char* video_memory = (char*) 0xb8000;
+    char* message = "Hello from Kernel";
 
-    char *msg = "Hello from Kernel";
-
-    int i = 0;
-
-    while (msg[i] != '\0') {
-        video[i * 2] = msg[i];
-        video[i * 2 + 1] = 0x0F;
-        i++;
+    for (int i = 0; message[i] != '\0'; i++) {
+        video_memory[i * 2] = message[i];
+        video_memory[i * 2 + 1] = 0x0F; // White text on black
     }
-
-    while(1);
 }
